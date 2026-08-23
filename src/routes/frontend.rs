@@ -52,7 +52,11 @@ async fn login(
     };
 
     let token = user.auth_token()?;
-    let cookie = Cookie::build(("token", token)).http_only(true).path("/");
+    let cookie = Cookie::build(("token", token))
+        .http_only(true)
+        .path("/")
+        .secure(std::env::var("RENDER").is_ok()) // Only secure (HTTPS) on Render/Prod
+        .same_site(axum_extra::extract::cookie::SameSite::Strict);
 
     Ok((jar.add(cookie), Redirect::to("/")))
 }
