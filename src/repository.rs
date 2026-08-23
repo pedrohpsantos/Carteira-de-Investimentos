@@ -14,8 +14,7 @@ pub struct Repository {
 
 impl Repository {
     pub async fn list_assets(&self) -> sqlx::Result<Vec<Asset>> {
-        sqlx::query_as!(
-            Asset,
+        sqlx::query_as::<_, Asset>(
             "SELECT id, name, unit_value, ticker
              FROM assets;"
         )
@@ -24,15 +23,14 @@ impl Repository {
     }
 
     pub async fn create_asset(&self, name: String, ticker: String, unit_value: f64) -> sqlx::Result<Asset> {
-        sqlx::query_as!(
-            Asset,
+        sqlx::query_as::<_, Asset>(
             "INSERT INTO assets (name, ticker, unit_value)
              VALUES ($1, $2, $3)
-             RETURNING id, name, unit_value, ticker;",
-            name,
-            ticker,
-            unit_value
+             RETURNING id, name, unit_value, ticker;"
         )
+        .bind(name)
+        .bind(ticker)
+        .bind(unit_value)
         .fetch_one(&self.db)
         .await
     }
@@ -44,26 +42,24 @@ impl Repository {
         ticker: Option<String>,
         unit_value: Option<f64>,
     ) -> sqlx::Result<Option<Asset>> {
-        sqlx::query_as!(
-            Asset,
+        sqlx::query_as::<_, Asset>(
             "UPDATE assets
              SET name=COALESCE($2, name),
                  ticker=COALESCE($3, ticker),
                  unit_value=COALESCE($4, unit_value)
              WHERE id=$1
-             RETURNING id, name, unit_value, ticker;",
-            asset_id,
-            name,
-            ticker,
-            unit_value
+             RETURNING id, name, unit_value, ticker;"
         )
+        .bind(asset_id)
+        .bind(name)
+        .bind(ticker)
+        .bind(unit_value)
         .fetch_optional(&self.db)
         .await
     }
 
     pub async fn list_portfolio(&self, user_id: i64) -> sqlx::Result<Vec<PortfolioItem>> {
-        sqlx::query_as!(
-            PortfolioItem,
+        sqlx::query_as::<_, PortfolioItem>(
             r#"SELECT 
                 p.id, 
                 p.asset_id, 
@@ -71,63 +67,61 @@ impl Repository {
                 a.ticker as asset_ticker,
                 p.quantity, 
                 a.unit_value,
-                (p.quantity * a.unit_value) as "total_value!"
+                (p.quantity * a.unit_value) as total_value
              FROM portfolios p
              JOIN assets a ON p.asset_id = a.id
-             WHERE p.user_id = $1;"#,
-            user_id
+             WHERE p.user_id = $1;"#
         )
+        .bind(user_id)
         .fetch_all(&self.db)
         .await
     }
 
     pub async fn add_to_portfolio(&self, user_id: i64, asset_id: i64, quantity: f64) -> sqlx::Result<()> {
-        sqlx::query!(
+        sqlx::query(
             "INSERT INTO portfolios (user_id, asset_id, quantity)
              VALUES ($1, $2, $3)
              ON CONFLICT (user_id, asset_id) 
-             DO UPDATE SET quantity = portfolios.quantity + $3;",
-            user_id,
-            asset_id,
-            quantity
+             DO UPDATE SET quantity = portfolios.quantity + $3;"
         )
+        .bind(user_id)
+        .bind(asset_id)
+        .bind(quantity)
         .execute(&self.db)
         .await?;
         Ok(())
     }
 
     pub async fn remove_from_portfolio(&self, portfolio_id: i64, user_id: i64) -> sqlx::Result<()> {
-        sqlx::query!(
-            "DELETE FROM portfolios WHERE id = $1 AND user_id = $2;",
-            portfolio_id,
-            user_id
+        sqlx::query(
+            "DELETE FROM portfolios WHERE id = $1 AND user_id = $2;"
         )
+        .bind(portfolio_id)
+        .bind(user_id)
         .execute(&self.db)
         .await?;
         Ok(())
     }
 
     pub async fn add_user(&self, username: &str, password_hash: &str) -> sqlx::Result<UserRecord> {
-        sqlx::query_as!(
-            UserRecord,
+        sqlx::query_as::<_, UserRecord>(
             "INSERT INTO users (username, password_hash)
              VALUES ($1, $2)
-             RETURNING id, username, password_hash;",
-            username,
-            password_hash,
+             RETURNING id, username, password_hash;"
         )
+        .bind(username)
+        .bind(password_hash)
         .fetch_one(&self.db)
         .await
     }
 
     pub async fn get_user_by_name(&self, username: &str) -> sqlx::Result<Option<UserRecord>> {
-        sqlx::query_as!(
-            UserRecord,
+        sqlx::query_as::<_, UserRecord>(
             "SELECT id, username, password_hash
              FROM users
-             WHERE username = $1;",
-            username
+             WHERE username = $1;"
         )
+        .bind(username)
         .fetch_optional(&self.db)
         .await
     }
