@@ -1,10 +1,10 @@
 use askama::Template;
 use axum::{
-    Form, Router,
     response::{Html, IntoResponse, Redirect, Response},
     routing::get,
+    Form, Router,
 };
-use axum_extra::extract::{CookieJar, cookie::Cookie};
+use axum_extra::extract::{cookie::Cookie, CookieJar};
 use serde::Deserialize;
 
 use crate::{

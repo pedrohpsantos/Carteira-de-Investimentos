@@ -3,7 +3,7 @@ use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tracing::info;
 use tracing_subscriber::{
-    Layer, fmt::format::FmtSpan, layer::SubscriberExt, util::SubscriberInitExt,
+    fmt::format::FmtSpan, layer::SubscriberExt, util::SubscriberInitExt, Layer,
 };
 
 use crate::routes;
