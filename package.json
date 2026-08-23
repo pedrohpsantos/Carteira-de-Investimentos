@@ -1,0 +1,29 @@
+{
+  "name": "rust-fullstack-carteira-investimentos",
+  "version": "1.0.0",
+  "description": "Este projeto é uma aplicação Fullstack desenvolvida em Rust para o gerenciamento de uma Carteira de Investimentos. Ele consolida uma API, integração com banco de dados PostgreSQL, autenticação JWT, e renderização de páginas HTML do lado do servidor usando Askama.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "prettier --check \"templates/**/*.html\"",
+    "format": "prettier --write \"templates/**/*.html\"",
+    "test": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedrohpsantos/rust-fullstack-carteira-investimentos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pedrohpsantos/rust-fullstack-carteira-investimentos/issues"
+  },
+  "homepage": "https://github.com/pedrohpsantos/rust-fullstack-carteira-investimentos#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "playwright": "^1.62.1",
+    "prettier": "^3.9.6",
+    "wait-on": "^9.1.0"
+  }
+}

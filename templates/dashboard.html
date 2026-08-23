@@ -1,91 +1,116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Carteira de Investimentos</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
     <style>
-        .container { max-width: 1000px; margin: 2rem auto; }
-        .total { font-size: 1.5rem; font-weight: bold; margin-top: 1rem; color: var(--pico-ins-color); }
-        .logout { float: right; }
+      .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+      }
+      .total {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 1rem;
+        color: var(--pico-ins-color);
+      }
+      .logout {
+        float: right;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <main class="container">
-        <a href="/logout" class="logout">Sair</a>
-        <h1>Bem-vindo, {{ user.username() }}</h1>
+      <a href="/logout" class="logout">Sair</a>
+      <h1>Bem-vindo, {{ user.username() }}</h1>
 
-        <h2>Sua Carteira de Investimentos</h2>
-        {% if portfolio.is_empty() %}
-            <p>Você ainda não possui ativos na sua carteira.</p>
-        {% else %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ativo</th>
-                        <th>Ticker</th>
-                        <th>Quantidade</th>
-                        <th>Valor Unitário</th>
-                        <th>Valor Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in portfolio %}
-                    <tr>
-                        <td>{{ item.asset_name }}</td>
-                        <td>{{ item.asset_ticker }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>R$ {{ item.unit_value }}</td>
-                        <td>R$ {{ item.total_value }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <div class="total">
-                Valor Total da Carteira: R$ {{ total_value }}
-            </div>
-        {% endif %}
+      <h2>Sua Carteira de Investimentos</h2>
+      {% if portfolio.is_empty() %}
+      <p>Você ainda não possui ativos na sua carteira.</p>
+      {% else %}
+      <table>
+        <thead>
+          <tr>
+            <th>Ativo</th>
+            <th>Ticker</th>
+            <th>Quantidade</th>
+            <th>Valor Unitário</th>
+            <th>Valor Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in portfolio %}
+          <tr>
+            <td>{{ item.asset_name }}</td>
+            <td>{{ item.asset_ticker }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>R$ {{ item.unit_value }}</td>
+            <td>R$ {{ item.total_value }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="total">Valor Total da Carteira: R$ {{ total_value }}</div>
+      {% endif %}
 
-        <div class="panels">
-            <div class="panel">
-                <h3>Adicionar à Carteira</h3>
-                <form action="/portfolio" method="POST">
-                    <div class="form-group">
-                        <label for="asset_id">Ativo:</label>
-                        <select name="asset_id" id="asset_id" required>
-                            {% for asset in assets %}
-                                <option value="{{ asset.id }}">{{ asset.name }} ({{ asset.ticker }})</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantidade:</label>
-                        <input type="number" name="quantity" id="quantity" step="0.01" required>
-                    </div>
-                    <button type="submit">Adicionar</button>
-                </form>
+      <div class="panels">
+        <div class="panel">
+          <h3>Adicionar à Carteira</h3>
+          <form action="/portfolio" method="POST">
+            <div class="form-group">
+              <label for="asset_id">Ativo:</label>
+              <select name="asset_id" id="asset_id" required>
+                {% for asset in assets %}
+                <option value="{{ asset.id }}">
+                  {{ asset.name }} ({{ asset.ticker }})
+                </option>
+                {% endfor %}
+              </select>
             </div>
-
-            <div class="panel">
-                <h3>Cadastrar Novo Ativo Global</h3>
-                <form action="/assets/new" method="POST">
-                    <div class="form-group">
-                        <label for="name">Nome do Ativo:</label>
-                        <input type="text" name="name" id="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ticker">Ticker:</label>
-                        <input type="text" name="ticker" id="ticker" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="unit_value">Valor Unitário:</label>
-                        <input type="number" name="unit_value" id="unit_value" step="0.01" required>
-                    </div>
-                    <button type="submit">Cadastrar</button>
-                </form>
+            <div class="form-group">
+              <label for="quantity">Quantidade:</label>
+              <input
+                type="number"
+                name="quantity"
+                id="quantity"
+                step="0.01"
+                required
+              />
             </div>
+            <button type="submit">Adicionar</button>
+          </form>
         </div>
+
+        <div class="panel">
+          <h3>Cadastrar Novo Ativo Global</h3>
+          <form action="/assets/new" method="POST">
+            <div class="form-group">
+              <label for="name">Nome do Ativo:</label>
+              <input type="text" name="name" id="name" required />
+            </div>
+            <div class="form-group">
+              <label for="ticker">Ticker:</label>
+              <input type="text" name="ticker" id="ticker" required />
+            </div>
+            <div class="form-group">
+              <label for="unit_value">Valor Unitário:</label>
+              <input
+                type="number"
+                name="unit_value"
+                id="unit_value"
+                step="0.01"
+                required
+              />
+            </div>
+            <button type="submit">Cadastrar</button>
+          </form>
+        </div>
+      </div>
     </main>
-</body>
+  </body>
 </html>
