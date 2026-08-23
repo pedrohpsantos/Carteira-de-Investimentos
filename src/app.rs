@@ -18,6 +18,11 @@ impl AppState {
         let database_url = std::env::var("DATABASE_URL")?;
         let db = PgPool::connect(&database_url).await?;
 
+        // Run database migrations automatically on startup
+        tracing::info!("Running database migrations...");
+        sqlx::migrate!().run(&db).await?;
+        tracing::info!("Database migrations applied.");
+
         Ok(Self { db })
     }
 }
