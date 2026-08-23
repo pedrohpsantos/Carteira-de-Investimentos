@@ -1,7 +1,7 @@
-use axum::{middleware, middleware::Next, extract::Request, response::Response, Router};
+use axum::{extract::Request, middleware, middleware::Next, response::Response, Router};
 use sqlx::PgPool;
-use tokio::net::TcpListener;
 use std::time::Instant;
+use tokio::net::TcpListener;
 use tracing::info;
 use tracing_subscriber::{
     fmt::format::FmtSpan, layer::SubscriberExt, util::SubscriberInitExt, Layer,
@@ -13,20 +13,14 @@ async fn logging_middleware(req: Request, next: Next) -> Response {
     let start = Instant::now();
     let method = req.method().clone();
     let uri = req.uri().clone();
-    
+
     let res = next.run(req).await;
-    
+
     let latency = start.elapsed();
     let status = res.status();
-    
-    tracing::info!(
-        "{} {} {} - {:?}",
-        method,
-        uri,
-        status.as_u16(),
-        latency
-    );
-    
+
+    tracing::info!("{} {} {} - {:?}", method, uri, status.as_u16(), latency);
+
     res
 }
 

@@ -20,7 +20,7 @@ test.describe('Wallet Live Frontend E2E', () => {
     // Should redirect to dashboard
     await expect(page).toHaveURL('/');
     
-    // Should see the welcome message
-    await expect(page.locator('h1')).toContainText('Bem-vindo');
+    // Should see the dashboard elements
+    await expect(page.locator('body')).toContainText('Saldo Total da Carteira de ' + testUsername);
   });
 });
