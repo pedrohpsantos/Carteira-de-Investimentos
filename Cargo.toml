@@ -1,5 +1,5 @@
 [package]
-name = "wallet-live"
+name = "rust-folio"
 version = "0.1.0"
 edition = "2021"
 

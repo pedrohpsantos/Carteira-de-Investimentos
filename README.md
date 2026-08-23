@@ -1,6 +1,6 @@
-# Carteira de Investimentos (Fullstack com Rust)
+# RustFolio 🦀
 
-Este projeto é uma aplicação Fullstack desenvolvida em Rust para o gerenciamento de uma Carteira de Investimentos. Ele consolida uma API, integração com banco de dados PostgreSQL, autenticação JWT, e renderização de páginas HTML do lado do servidor usando Askama.
+Este projeto é uma aplicação Fullstack de alta performance desenvolvida em Rust para o gerenciamento de uma Carteira de Investimentos. Ele consolida uma API veloz, integração com banco de dados PostgreSQL, autenticação JWT robusta, e renderização de páginas HTML pelo lado do servidor utilizando Askama.
 
 ## Arquitetura e Tecnologias
 
