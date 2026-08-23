@@ -19,12 +19,11 @@ RUN cargo build --release
 FROM debian:bookworm-slim
 
 WORKDIR /app
-COPY --from=builder /usr/src/app/target/release/wallet-live /app/wallet-live
+COPY --from=builder /usr/src/app/target/release/rust-folio /app/rust-folio
 COPY --from=builder /usr/src/app/templates /app/templates
-COPY --from=builder /usr/src/app/.env /app/.env
 
 RUN apt-get update && apt-get install -y libssl3 ca-certificates && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3000
 
-CMD ["./wallet-live"]
+CMD ["./rust-folio"]
