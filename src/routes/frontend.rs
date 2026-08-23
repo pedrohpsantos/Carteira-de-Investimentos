@@ -71,10 +71,7 @@ struct DashboardPage {
     total_value: f64,
 }
 
-async fn index(
-    maybe_user: Option<User>,
-    repository: Repository,
-) -> Result<Response, AppError> {
+async fn index(maybe_user: Option<User>, repository: Repository) -> Result<Response, AppError> {
     match maybe_user {
         Some(user) => {
             let portfolio = repository.list_portfolio(user.id()).await?;
@@ -104,7 +101,9 @@ async fn add_to_portfolio(
     repository: Repository,
     Form(form): Form<PortfolioForm>,
 ) -> Result<impl IntoResponse, AppError> {
-    repository.add_to_portfolio(user.id(), form.asset_id, form.quantity).await?;
+    repository
+        .add_to_portfolio(user.id(), form.asset_id, form.quantity)
+        .await?;
     Ok(Redirect::to("/"))
 }
 
@@ -120,6 +119,8 @@ async fn create_asset_frontend(
     repository: Repository,
     Form(form): Form<AssetForm>,
 ) -> Result<impl IntoResponse, AppError> {
-    repository.create_asset(form.name, form.ticker, form.unit_value).await?;
+    repository
+        .create_asset(form.name, form.ticker, form.unit_value)
+        .await?;
     Ok(Redirect::to("/"))
 }
