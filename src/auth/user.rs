@@ -11,8 +11,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::{app::AppState, error::AppError, repository::Repository};
 
-
-
 pub struct UnauthenticatedUser {
     username: String,
     password: String,
@@ -69,7 +67,8 @@ impl User {
     }
 
     pub fn auth_token(self) -> Result<String, AppError> {
-        let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "default-insecure-secret".to_string());
+        let secret =
+            std::env::var("JWT_SECRET").unwrap_or_else(|_| "default-insecure-secret".to_string());
         let key = HS256Key::from_bytes(secret.as_bytes());
         let claims = Claims::with_custom_claims(UserClaims::from(self), Duration::from_mins(10));
         let token = key.authenticate(claims)?;
@@ -77,7 +76,8 @@ impl User {
     }
 
     pub fn from_auth_token(token: &str) -> Result<Self, AppError> {
-        let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "default-insecure-secret".to_string());
+        let secret =
+            std::env::var("JWT_SECRET").unwrap_or_else(|_| "default-insecure-secret".to_string());
         let key = HS256Key::from_bytes(secret.as_bytes());
         let claims: UserClaims = key.verify_token(token, None)?.custom;
         Ok(Self::new(claims.id, claims.username))
