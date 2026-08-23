@@ -1,0 +1,8 @@
+ALTER TABLE assets ADD COLUMN ticker TEXT NOT NULL DEFAULT 'N/A';
+CREATE TABLE IF NOT EXISTS portfolios (
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  asset_id BIGINT NOT NULL REFERENCES assets(id),
+  quantity DOUBLE PRECISION NOT NULL,
+  UNIQUE (user_id, asset_id)
+);

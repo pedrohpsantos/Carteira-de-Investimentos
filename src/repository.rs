@@ -5,31 +5,32 @@ use sqlx::PgPool;
 
 use crate::{
     app::AppState,
-    models::{Asset, UserRecord},
+    models::{Asset, PortfolioItem, UserRecord},
 };
 
 pub struct Repository {
-    db: PgPool,
+    pub db: PgPool,
 }
 
 impl Repository {
     pub async fn list_assets(&self) -> sqlx::Result<Vec<Asset>> {
         sqlx::query_as!(
             Asset,
-            "SELECT id, name, unit_value
+            "SELECT id, name, unit_value, ticker
              FROM assets;"
         )
         .fetch_all(&self.db)
         .await
     }
 
-    pub async fn create_asset(&self, name: String, unit_value: f64) -> sqlx::Result<Asset> {
+    pub async fn create_asset(&self, name: String, ticker: String, unit_value: f64) -> sqlx::Result<Asset> {
         sqlx::query_as!(
             Asset,
-            "INSERT INTO assets (name, unit_value)
-             VALUES ($1, $2)
-             RETURNING id, name, unit_value;",
+            "INSERT INTO assets (name, ticker, unit_value)
+             VALUES ($1, $2, $3)
+             RETURNING id, name, unit_value, ticker;",
             name,
+            ticker,
             unit_value
         )
         .fetch_one(&self.db)
@@ -40,21 +41,70 @@ impl Repository {
         &self,
         asset_id: i64,
         name: Option<String>,
+        ticker: Option<String>,
         unit_value: Option<f64>,
     ) -> sqlx::Result<Option<Asset>> {
         sqlx::query_as!(
             Asset,
             "UPDATE assets
              SET name=COALESCE($2, name),
-                 unit_value=COALESCE($3, unit_value)
+                 ticker=COALESCE($3, ticker),
+                 unit_value=COALESCE($4, unit_value)
              WHERE id=$1
-             RETURNING id, name, unit_value;",
+             RETURNING id, name, unit_value, ticker;",
             asset_id,
             name,
+            ticker,
             unit_value
         )
         .fetch_optional(&self.db)
         .await
+    }
+
+    pub async fn list_portfolio(&self, user_id: i64) -> sqlx::Result<Vec<PortfolioItem>> {
+        sqlx::query_as!(
+            PortfolioItem,
+            r#"SELECT 
+                p.id, 
+                p.asset_id, 
+                a.name as asset_name, 
+                a.ticker as asset_ticker,
+                p.quantity, 
+                a.unit_value,
+                (p.quantity * a.unit_value) as "total_value!"
+             FROM portfolios p
+             JOIN assets a ON p.asset_id = a.id
+             WHERE p.user_id = $1;"#,
+            user_id
+        )
+        .fetch_all(&self.db)
+        .await
+    }
+
+    pub async fn add_to_portfolio(&self, user_id: i64, asset_id: i64, quantity: f64) -> sqlx::Result<()> {
+        sqlx::query!(
+            "INSERT INTO portfolios (user_id, asset_id, quantity)
+             VALUES ($1, $2, $3)
+             ON CONFLICT (user_id, asset_id) 
+             DO UPDATE SET quantity = portfolios.quantity + $3;",
+            user_id,
+            asset_id,
+            quantity
+        )
+        .execute(&self.db)
+        .await?;
+        Ok(())
+    }
+
+    pub async fn remove_from_portfolio(&self, portfolio_id: i64, user_id: i64) -> sqlx::Result<()> {
+        sqlx::query!(
+            "DELETE FROM portfolios WHERE id = $1 AND user_id = $2;",
+            portfolio_id,
+            user_id
+        )
+        .execute(&self.db)
+        .await?;
+        Ok(())
     }
 
     pub async fn add_user(&self, username: &str, password_hash: &str) -> sqlx::Result<UserRecord> {
@@ -100,5 +150,36 @@ impl FromRequestParts<AppState> for Repository {
 impl From<PgPool> for Repository {
     fn from(db: PgPool) -> Self {
         Self { db }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use sqlx::PgPool;
+    use super::*;
+
+    #[sqlx::test]
+    async fn test_portfolio_operations(db: PgPool) {
+        let repo = Repository::from(db);
+        
+        // Setup user and asset
+        let user = repo.add_user("testuser", "hashed_pass").await.unwrap();
+        let asset = repo.create_asset("Test Asset".to_string(), "TST".to_string(), 100.0).await.unwrap();
+        
+        // Add to portfolio
+        repo.add_to_portfolio(user.id, asset.id, 5.0).await.unwrap();
+        
+        // List portfolio
+        let portfolio = repo.list_portfolio(user.id).await.unwrap();
+        assert_eq!(portfolio.len(), 1);
+        assert_eq!(portfolio[0].asset_ticker, "TST");
+        assert_eq!(portfolio[0].quantity, 5.0);
+        assert_eq!(portfolio[0].total_value, 500.0);
+        
+        // Add more (upsert behavior)
+        repo.add_to_portfolio(user.id, asset.id, 2.5).await.unwrap();
+        let portfolio2 = repo.list_portfolio(user.id).await.unwrap();
+        assert_eq!(portfolio2[0].quantity, 7.5);
+        assert_eq!(portfolio2[0].total_value, 750.0);
     }
 }

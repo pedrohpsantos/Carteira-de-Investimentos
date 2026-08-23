@@ -1,2 +1,2 @@
-INSERT INTO assets (name, unit_value)
-VALUES ('Bitcoin', 10.0);
+INSERT INTO assets (name, ticker, unit_value)
+VALUES ('Bitcoin', 'BTC', 10.0);

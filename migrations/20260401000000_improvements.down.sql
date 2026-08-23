@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS portfolios;
+ALTER TABLE assets DROP COLUMN IF EXISTS ticker;
