@@ -1,114 +1,473 @@
 <!doctype html>
-<html lang="en">
+
+<html class="dark" lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RustFolio - Dashboard</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>RustFolio Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&amp;family=Inter:wght@400..700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-container": "#9ca7be",
+              "on-surface-variant": "#bcc9cd",
+              "surface-container-high": "#23293c",
+              "on-primary-container": "#00424f",
+              "on-error-container": "#ffdad6",
+              "error-container": "#93000a",
+              "tertiary-fixed-dim": "#bcc7de",
+              "surface-bright": "#33394c",
+              "tertiary-fixed": "#d8e3fb",
+              "on-secondary-fixed": "#2c0051",
+              tertiary: "#bcc7de",
+              "surface-container-low": "#151b2d",
+              "on-secondary-container": "#d6a9ff",
+              "on-secondary": "#490080",
+              "inverse-surface": "#dce1fb",
+              "secondary-fixed-dim": "#ddb7ff",
+              "on-secondary-fixed-variant": "#6900b3",
+              "secondary-container": "#6f00be",
+              "outline-variant": "#3d494c",
+              "on-primary-fixed": "#001f26",
+              error: "#ffb4ab",
+              "secondary-fixed": "#f0dbff",
+              background: "#0c1324",
+              "surface-container": "#191f31",
+              secondary: "#ddb7ff",
+              "on-primary-fixed-variant": "#004e5c",
+              "inverse-primary": "#00687a",
+              "on-primary": "#003640",
+              "on-tertiary": "#263143",
+              "on-tertiary-fixed-variant": "#3c475a",
+              "on-background": "#dce1fb",
+              "on-tertiary-container": "#313c4f",
+              "surface-container-lowest": "#070d1f",
+              surface: "#0c1324",
+              "primary-fixed": "#acedff",
+              "surface-container-highest": "#2e3447",
+              "inverse-on-surface": "#2a3043",
+              primary: "#4cd7f6",
+              "on-tertiary-fixed": "#111c2d",
+              outline: "#869397",
+              "on-error": "#690005",
+              "surface-variant": "#2e3447",
+              "surface-tint": "#4cd7f6",
+              "primary-container": "#06b6d4",
+              "on-surface": "#dce1fb",
+              "primary-fixed-dim": "#4cd7f6",
+              "surface-dim": "#0c1324",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              unit: "4px",
+              "margin-mobile": "16px",
+              "container-padding": "32px",
+              "stack-gap": "16px",
+              gutter: "24px",
+            },
+            fontFamily: {
+              "headline-md": ["Inter"],
+              "label-sm": ["Geist"],
+              "headline-lg": ["Inter"],
+              "label-md": ["Geist"],
+              "body-lg": ["Inter"],
+              "headline-lg-mobile": ["Inter"],
+              "body-md": ["Inter"],
+            },
+            fontSize: {
+              "headline-md": [
+                "24px",
+                {
+                  lineHeight: "32px",
+                  letterSpacing: "-0.01em",
+                  fontWeight: "600",
+                },
+              ],
+              "label-sm": [
+                "12px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "600",
+                },
+              ],
+              "headline-lg": [
+                "40px",
+                {
+                  lineHeight: "48px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "label-md": [
+                "14px",
+                {
+                  lineHeight: "20px",
+                  letterSpacing: "0.02em",
+                  fontWeight: "500",
+                },
+              ],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "headline-lg-mobile": [
+                "30px",
+                {
+                  lineHeight: "36px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            },
+          },
+        },
+      };
+    </script>
     <style>
-      .container {
-        max-width: 1000px;
-        margin: 2rem auto;
+      .glass-card {
+        background: rgba(
+          21,
+          27,
+          45,
+          0.5
+        ); /* surface-container-low with opacity */
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
-      .total {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-top: 1rem;
-        color: var(--pico-ins-color);
+      .gradient-btn {
+        background: linear-gradient(
+          135deg,
+          theme("colors.primary"),
+          theme("colors.secondary")
+        );
+        transition: all 0.3s ease;
       }
-      .logout {
-        float: right;
+      .gradient-btn:hover {
+        box-shadow: 0 0 15px rgba(76, 215, 246, 0.5);
+        transform: translateY(-2px);
+      }
+      .glass-input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+      .glass-input:focus {
+        border-color: theme("colors.primary");
+        box-shadow: 0 0 10px rgba(76, 215, 246, 0.2);
+        outline: none;
       }
     </style>
   </head>
-  <body>
-    <main class="container">
-      <a href="/logout" class="logout">Sair</a>
-      <h1>Bem-vindo, {{ user.username() }}</h1>
-
-      <h2>Sua Carteira de Investimentos</h2>
-      {% if portfolio.is_empty() %}
-      <p>Você ainda não possui ativos na sua carteira.</p>
-      {% else %}
-      <table>
-        <thead>
-          <tr>
-            <th>Ativo</th>
-            <th>Ticker</th>
-            <th>Quantidade</th>
-            <th>Valor Unitário</th>
-            <th>Valor Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in portfolio %}
-          <tr>
-            <td>{{ item.asset_name }}</td>
-            <td>{{ item.asset_ticker }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>R$ {{ item.unit_value }}</td>
-            <td>R$ {{ item.total_value }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <div class="total">Valor Total da Carteira: R$ {{ total_value }}</div>
-      {% endif %}
-
-      <div class="panels">
-        <div class="panel">
-          <h3>Adicionar à Carteira</h3>
-          <form action="/portfolio" method="POST">
-            <div class="form-group">
-              <label for="asset_id">Ativo:</label>
-              <select name="asset_id" id="asset_id" required>
-                {% for asset in assets %}
-                <option value="{{ asset.id }}">
-                  {{ asset.name }} ({{ asset.ticker }})
-                </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="quantity">Quantidade:</label>
-              <input
-                type="number"
-                name="quantity"
-                id="quantity"
-                step="0.01"
-                required
-              />
-            </div>
-            <button type="submit">Adicionar</button>
-          </form>
+  <body
+    class="bg-background text-on-surface min-h-screen font-body-md overflow-x-hidden"
+  >
+    <!-- TopNavBar -->
+    <nav
+      class="bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-primary/5 flex justify-between items-center w-full px-container-padding h-16 sticky top-0 z-50"
+    >
+      <div class="flex items-center gap-gutter">
+        <span
+          class="font-headline-md text-headline-md font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+          >RustFolio</span
+        >
+      </div>
+      <div class="flex items-center gap-stack-gap">
+        <button
+          class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center"
+        >
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >account_balance_wallet</span
+          >
+        </button>
+        <button
+          class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center"
+        >
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >notifications</span
+          >
+        </button>
+        <button
+          class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center"
+        >
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >settings</span
+          >
+        </button>
+        <div class="h-6 w-px bg-white/10 mx-2"></div>
+        <a
+          href="/logout"
+          class="font-label-md text-label-md text-primary hover:bg-white/5 transition-all duration-300 px-4 py-2 rounded-lg active:scale-95 transition-transform inline-block"
+          >Logout</a
+        >
+      </div>
+    </nav>
+    <main class="max-w-[1440px] mx-auto p-container-padding space-y-gutter">
+      <!-- Featured Section -->
+      <section class="glass-card rounded-xl p-8 relative overflow-hidden">
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 pointer-events-none"
+        ></div>
+        <div
+          class="relative z-10 flex flex-col justify-center items-center text-center"
+        >
+          <h2
+            class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-2"
+          >
+            Saldo Total da Carteira de {{ user.username() }}
+          </h2>
+          <div
+            class="font-headline-lg text-headline-lg font-bold bg-gradient-to-r from-white to-primary-fixed bg-clip-text text-transparent md:text-[64px] md:leading-[72px]"
+          >
+            R$ {{ total_value }}
+          </div>
+          <div
+            class="mt-4 flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-1 rounded-full font-label-sm text-label-sm"
+          >
+            <span class="material-symbols-outlined text-[16px]"
+              >trending_up</span
+            >
+            +2.4% Hoje
+          </div>
         </div>
-
-        <div class="panel">
-          <h3>Cadastrar Novo Ativo Global</h3>
-          <form action="/assets/new" method="POST">
-            <div class="form-group">
-              <label for="name">Nome do Ativo:</label>
-              <input type="text" name="name" id="name" required />
-            </div>
-            <div class="form-group">
-              <label for="ticker">Ticker:</label>
-              <input type="text" name="ticker" id="ticker" required />
-            </div>
-            <div class="form-group">
-              <label for="unit_value">Valor Unitário:</label>
-              <input
-                type="number"
-                name="unit_value"
-                id="unit_value"
-                step="0.01"
-                required
-              />
-            </div>
-            <button type="submit">Cadastrar</button>
-          </form>
+      </section>
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+        <!-- Left Column: Meus Ativos -->
+        <div class="lg:col-span-8 glass-card rounded-xl p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="font-headline-md text-headline-md text-on-surface">
+              Meus Ativos
+            </h3>
+            <button
+              class="text-on-surface-variant hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined">filter_list</span>
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-white/5">
+                  <th
+                    class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider"
+                  >
+                    Ticker
+                  </th>
+                  <th
+                    class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider"
+                  >
+                    Nome
+                  </th>
+                  <th
+                    class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right"
+                  >
+                    Quantidade
+                  </th>
+                  <th
+                    class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right"
+                  >
+                    Preço Atual
+                  </th>
+                  <th
+                    class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right"
+                  >
+                    Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                class="font-body-md text-body-md text-on-surface divide-y divide-white/5"
+              >
+                {% for item in portfolio %}
+                <tr
+                  class="hover:bg-white/5 transition-colors group cursor-pointer"
+                >
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-primary font-bold text-xs"
+                      >
+                        {{ item.asset_ticker }}
+                      </div>
+                      <span
+                        class="font-label-md text-label-md text-primary group-hover:text-primary-fixed transition-colors"
+                        >{{ item.asset_ticker }}</span
+                      >
+                    </div>
+                  </td>
+                  <td class="py-4 px-4 text-on-surface-variant">
+                    {{ item.asset_name }}
+                  </td>
+                  <td class="py-4 px-4 text-right">{{ item.quantity }}</td>
+                  <td class="py-4 px-4 text-right">R$ {{ item.unit_value }}</td>
+                  <td class="py-4 px-4 text-right font-semibold">
+                    R$ {{ item.total_value }}
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td
+                    colspan="5"
+                    class="py-8 text-center text-on-surface-variant"
+                  >
+                    Nenhum ativo na carteira.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Right Column: Sidebar Actions -->
+        <div class="lg:col-span-4 flex flex-col gap-gutter">
+          <!-- Card 1: Cadastrar Novo Ativo Global -->
+          <div class="glass-card rounded-xl p-6">
+            <h3
+              class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >add_circle</span
+              >
+              Cadastrar Novo Ativo
+            </h3>
+            <form method="POST" action="/assets/new" class="space-y-4">
+              <div>
+                <label
+                  class="block font-label-sm text-label-sm text-on-surface-variant mb-1"
+                  >Nome do Ativo</label
+                >
+                <input
+                  name="name"
+                  class="w-full glass-input rounded-lg px-4 py-2 font-body-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0"
+                  placeholder="Ex: Microsoft Corp."
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    class="block font-label-sm text-label-sm text-on-surface-variant mb-1"
+                    >Ticker</label
+                  >
+                  <input
+                    name="ticker"
+                    class="w-full glass-input rounded-lg px-4 py-2 font-body-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0 uppercase"
+                    placeholder="MSFT"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block font-label-sm text-label-sm text-on-surface-variant mb-1"
+                    >Valor Unitário</label
+                  >
+                  <input
+                    name="unit_value"
+                    class="w-full glass-input rounded-lg px-4 py-2 font-body-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0"
+                    placeholder="0.00"
+                    type="number"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="w-full gradient-btn rounded-lg py-3 mt-4 font-label-md text-label-md text-white font-bold tracking-wide"
+              >
+                Salvar
+              </button>
+            </form>
+          </div>
+          <!-- Card 2: Comprar/Adicionar à Carteira -->
+          <div class="glass-card rounded-xl p-6">
+            <h3
+              class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-secondary"
+                >shopping_cart</span
+              >
+              Adicionar à Carteira
+            </h3>
+            <form method="POST" action="/portfolio" class="space-y-4">
+              <div>
+                <label
+                  class="block font-label-sm text-label-sm text-on-surface-variant mb-1"
+                  >Selecione o Ativo</label
+                >
+                <select
+                  name="asset_id"
+                  class="w-full glass-input rounded-lg px-4 py-2 font-body-md text-on-surface appearance-none focus:ring-0"
+                  required
+                >
+                  <option class="bg-surface text-on-surface" value="">
+                    Selecione...
+                  </option>
+                  {% for asset in assets %}
+                  <option
+                    class="bg-surface text-on-surface"
+                    value="{{ asset.id }}"
+                  >
+                    {{ asset.ticker }} - {{ asset.name }} (R$ {{
+                    asset.unit_price }})
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label
+                  class="block font-label-sm text-label-sm text-on-surface-variant mb-1"
+                  >Quantidade</label
+                >
+                <input
+                  name="quantity"
+                  class="w-full glass-input rounded-lg px-4 py-2 font-body-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0"
+                  placeholder="0"
+                  type="number"
+                  step="0.01"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                class="w-full gradient-btn rounded-lg py-3 mt-4 font-label-md text-label-md text-white font-bold tracking-wide"
+              >
+                Adicionar
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </main>
